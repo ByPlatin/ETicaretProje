@@ -1,4 +1,6 @@
-﻿using ETicaretAPI.Application.Repositories.Product;
+﻿using ETicaretAPI.Application.Repositories.Customer;
+using ETicaretAPI.Application.Repositories.Order;
+using ETicaretAPI.Application.Repositories.Product;
 using ETicaretAPI.Domain.Entities;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -11,24 +13,27 @@ namespace ETicaretAPI.API.Controllers
     {
         readonly private IProductWriteRepository _productWriteRepository;
         readonly private IProductReadRepository _productReadRepository;
-        public ProductsController(IProductWriteRepository productWriteRepository, IProductReadRepository productReadRepository)
+        readonly private ICustomerWriteRepository _customerWriteRepository;
+        readonly private IOrderWriteRepository _orderWriteRepository;
+
+        public ProductsController(IProductWriteRepository productWriteRepository, IProductReadRepository productReadRepository, ICustomerWriteRepository customerWriteRepository, IOrderWriteRepository orderWriteRepository)
         {
             _productReadRepository = productReadRepository;
             _productWriteRepository = productWriteRepository;
+            _customerWriteRepository = customerWriteRepository;
+            _orderWriteRepository = orderWriteRepository;
         }
 
         [HttpGet()]
         public async Task Get()
         {
-            await _productReadRepository.GetByIdAsync("dbd3c7e1-9167-4696-9c1e-e85e0a2272bc");
+            var IDD = Guid.NewGuid();
+            await _customerWriteRepository.AddAsyc(new() { Id = IDD, Name = "customer Adi" });
+            await _orderWriteRepository.AddAsyc(new() { Description = "zart zurut", Address = "adresimiz 1", CustomerId = IDD });
+            await _orderWriteRepository.AddAsyc(new() { Description = "zart zurut 2", Address = "adresimiz 2", CustomerId = IDD });
+            await _orderWriteRepository.SaveAsync();
         }
 
-        [HttpGet("{id}")]
-        public async Task<IActionResult> Get(string id)
-        {
-            Product product = await _productReadRepository.GetByIdAsync(id);
-            return Ok(product);
-        }
 
     }
 }
