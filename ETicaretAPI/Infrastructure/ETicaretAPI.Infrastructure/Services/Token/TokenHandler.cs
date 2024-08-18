@@ -20,7 +20,7 @@ namespace ETicaretAPI.Infrastructure.Services.Token
             _configuration = configuration;
         }
 
-        public E.Token CreateAccessToken(int minute)
+        public E.Token CreateAccessToken(int second)
         {
             E.Token token = new E.Token();
 
@@ -28,7 +28,7 @@ namespace ETicaretAPI.Infrastructure.Services.Token
 
             SigningCredentials signingCredentials = new(securityKey, SecurityAlgorithms.HmacSha256);
 
-            token.Expiration = DateTime.UtcNow.AddMinutes(minute);
+            token.Expiration = DateTime.UtcNow.AddMinutes(second);
 
             JwtSecurityToken jwtSecurityToken = new(
                 audience: _configuration["Token:Audience"],

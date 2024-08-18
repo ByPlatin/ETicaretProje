@@ -3,39 +3,37 @@ using MediatR;
 using Microsoft.AspNetCore.Identity;
 using ETicaretAPI.Application.Exceptions;
 using Microsoft.AspNetCore.Mvc;
+using ETicaretAPI.Application.Abstractions.Services;
+using ETicaretAPI.Application.DTOs.User;
 
 
 namespace ETicaretAPI.Application.Features.Commands.AppUser.CreateUser
 {
     public class CreateUserCommandHandler : IRequestHandler<CreateUserCommandRequest, CreateUserCommandResponse>
     {
-        readonly UserManager<E.AppUser> _userManager;
+        readonly IUserService _userService;
 
-        public CreateUserCommandHandler(UserManager<E.AppUser> userManager)
+        public CreateUserCommandHandler(IUserService userService)
         {
-            _userManager = userManager;
+            _userService = userService;
         }
 
         [HttpPost]
         public async Task<CreateUserCommandResponse> Handle(CreateUserCommandRequest request, CancellationToken cancellationToken)
         {
-            IdentityResult result = await _userManager.CreateAsync(new()
+            CreateUserResponse response = await _userService.CreateAsync(new()
             {
-                Id = Guid.NewGuid().ToString(),
-                UserName = request.Username,
                 Email = request.Email,
                 NameSurname = request.NameSurname,
-            }, request.Password);
-
-            CreateUserCommandResponse response = new() { Succeeded = result.Succeeded };
-
-            if (response.Succeeded)
-                response.Message = "Kullanıcı kaydı yapıldı.";
-            else
-                foreach (var error in result.Errors)
-                    response.Message += $"{error.Code} - {error.Description} <br>";
-
-            return response;
+                Password = request.Password,
+                PasswordConfirm = request.PasswordConfirm,
+                Username = request.Username
+            });
+            return new()
+            {
+                Message = response.Message,
+                Succeeded = response.Succeeded
+            };
 
             //throw new UserCreateFailedException();
         }
