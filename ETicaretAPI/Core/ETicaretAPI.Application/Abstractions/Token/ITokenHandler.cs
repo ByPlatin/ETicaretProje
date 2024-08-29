@@ -4,11 +4,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ETicaretAPI.Domain.Entities.Identity;
 
 namespace ETicaretAPI.Application.Abstractions.Token
 {
     public interface ITokenHandler
     {
-        E.Token CreateAccessToken(int second);
+        E.Token CreateAccessToken(int second,AppUser appuser);
+        string CreateRefreshToken();
     }
 }
