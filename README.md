@@ -4,4 +4,3 @@ Storage olarak yerel depolama ve Azure altyapısı bulunmaktadır.Aktif olarak A
 
 Database olarak docker da PostgreSQL den beslenmektedir.
 
-*** Proje yapım aşamasındadır.
